@@ -1,6 +1,7 @@
 package me.ybbbno.nvanish;
 
 import com.nickuc.login.api.event.bukkit.auth.AuthenticateEvent;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -30,12 +31,12 @@ public class NLoginManager implements Listener {
             vanishM.hideFromThatPlayer(joined);
         }
 
-        if (tabM.isPlayerHided(joined)) {
-            plugin.logger.info("1");
-            tabM.hidePlayerFromAll(joined);
-        } else {
-            plugin.logger.info("2");
-            tabM.hideFromThatPlayer(joined);
-        }
+        Bukkit.getScheduler().runTaskLater(plugin, () -> {
+            if (tabM.isPlayerHided(joined)) {
+                tabM.hidePlayerFromAll(joined);
+            } else {
+                tabM.hideFromThatPlayer(joined);
+            }
+        }, 2L);
     }
 }
