@@ -1,0 +1,16 @@
+permissions:
+  vanish.use:
+    description: Allows use of /vanish
+    default: op
+  vanish.see:
+    description: See vanished players
+    default: op
+  vanish.reload:
+    description: Allows /vanishsettings reload
+    default: op
+  tab_hider.use:
+    description: Allows use of /tabhide
+    default: op
+  tab_hider.see:
+    description: See hided from tab list players
+    default: op

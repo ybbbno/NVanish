@@ -3,27 +3,37 @@ package me.ybbbno.nvanish.commands;
 import io.papermc.paper.command.brigadier.BasicCommand;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import me.deadybbb.ybmj.LegacyTextHandler;
-import me.ybbbno.nvanish.VanishManager;
+import me.deadybbb.ybmj.PluginProvider;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.Nullable;
 
-public class UnvanishCommand implements BasicCommand {
-    private final VanishManager manager;
+import java.util.Collection;
+import java.util.List;
 
-    public UnvanishCommand(VanishManager manager) {
-        this.manager = manager;
+public class ReloadCommand implements BasicCommand {
+    private final PluginProvider plugin;
+
+    public ReloadCommand(PluginProvider plugin) {
+        this.plugin = plugin;
     }
 
     @Override
     public void execute(CommandSourceStack source, String[] args) {
-        Player s = (Player) source.getSender();
+        CommandSender s = source.getSender();
 
-        if (manager.isPlayerVanished(s)) {
-            manager.toggleVanish(s);
+        if (args[0].equals("reload")) {
+            plugin.reloadConfig();
+            LegacyTextHandler.sendFormattedMessage(s, "<green>Vanish config reloaded.");
+            return;
         }
+
+        LegacyTextHandler.sendFormattedMessage(s, "<red>Usage: /vanishsettings reload");
+    }
+
+    @Override
+    public Collection<String> suggest(final CommandSourceStack commandSourceStack, final String[] args) {
+        return List.of("reload");
     }
 
     @Override
@@ -35,6 +45,6 @@ public class UnvanishCommand implements BasicCommand {
 
     @Override
     public @Nullable String permission() {
-        return "vanish.use";
+        return "vanish.reload";
     }
 }

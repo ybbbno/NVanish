@@ -1,0 +1,15 @@
+# config.yml
+features:
+  disable-damage:   true
+  disable-chat:     true
+  disable-target:   true
+  disable-pickup:   true
+  disable-build:    true      # blocks both breaking & placing
+  action-bar:       true
+  silent-joinquit:  true
+
+messages:
+  vanish:        '&aYou have vanished.'
+  unvanish:      '&cYou are visible again.'
+  cannot-chat:   '&cYou cannot chat while vanished.'
+  action-bar:    '&7[&eVANISHED&7]'

@@ -1,4 +1,4 @@
-package me.ybbbno.playerTabHider;
+package me.ybbbno.nvanish;
 
 import me.deadybbb.ybmj.BasicConfigHandler;
 import me.deadybbb.ybmj.PluginProvider;
@@ -22,7 +22,7 @@ public class HiderConfigManager extends BasicConfigHandler {
     }
 
     public void setPlayers(Set<UUID> players) {
-        config.set("players", players.stream().toList());
+        config.set("players", players.stream().map(UUID::toString).toList());
         saveConfig();
     }
 }

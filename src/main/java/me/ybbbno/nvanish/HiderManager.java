@@ -1,8 +1,8 @@
-package me.ybbbno.playerTabHider;
+package me.ybbbno.nvanish;
 
+import me.deadybbb.ybmj.LegacyTextHandler;
 import me.deadybbb.ybmj.PluginProvider;
 import org.bukkit.Bukkit;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -80,10 +80,12 @@ public class HiderManager implements Listener {
 
         if (!isPlayerHided(p)) {
             hided.add(p.getUniqueId());
+            LegacyTextHandler.sendFormattedMessage(p, "<red>Вы были убраны из таба!");
             hidePlayerFromAll(p);
             plugin.logger.info(p.getName() + " has hided from tab list.");
         } else {
             hided.remove(p.getUniqueId());
+            LegacyTextHandler.sendFormattedMessage(p, "<green>Вы были добавлены в таб!");
             showPlayerToAll(p);
             plugin.logger.info(p.getName() + " has added to tab list.");
         }
@@ -96,28 +98,29 @@ public class HiderManager implements Listener {
     public void hideFromThatPlayer(Player p) {
         for (UUID id : hided) {
             Player vp = Bukkit.getPlayer(id);
-            if (vp != null && !p.hasPermission("tab_hider.see"))
-                p.unlistPlayer(vp);
+            if (vp != null && !p.hasPermission("tab_hider.see") && vp != p) {
+                plugin.logger.info(p.getName() + " " + vp.getName() + " " + p.unlistPlayer(vp));
+            }
         }
     }
 
     public void showToThatPlayer(Player p) {
         for (UUID id : hided) {
             Player vp = Bukkit.getPlayer(id);
-            if (vp != null && !p.hasPermission("tab_hider.see"))
+            if (vp != null && !p.hasPermission("tab_hider.see") && vp != p)
                 p.listPlayer(vp);
         }
     }
 
     public void hidePlayerFromAll(Player p) {
         for (Player other : Bukkit.getOnlinePlayers()) {
-            if (!other.hasPermission("tab_hider.see"))
+            if (!other.hasPermission("tab_hider.see") && other != p)
                 other.unlistPlayer(p);
         }
     }
 
     public void showPlayerToAll(Player p) {
         for (Player other : Bukkit.getOnlinePlayers())
-            other.listPlayer(p);
+            if (other != p) other.listPlayer(p);
     }
 }

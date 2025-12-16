@@ -1,9 +1,9 @@
-package me.ybbbno.playerTabHider.commands;
+package me.ybbbno.nvanish.commands;
 
 import io.papermc.paper.command.brigadier.BasicCommand;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import me.deadybbb.ybmj.LegacyTextHandler;
-import me.ybbbno.playerTabHider.HiderManager;
+import me.ybbbno.nvanish.HiderManager;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
