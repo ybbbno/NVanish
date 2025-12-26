@@ -2,23 +2,58 @@ package me.ybbbno.nvanish.commands;
 
 import io.papermc.paper.command.brigadier.BasicCommand;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
+import me.deadybbb.ybmj.LegacyTextHandler;
+import me.ybbbno.nvanish.NVanish;
+import me.ybbbno.nvanish.PriorityManager;
 import me.ybbbno.nvanish.VanishManager;
+import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jspecify.annotations.Nullable;
 
-public class VanishCommand implements BasicCommand {
-    private final VanishManager manager;
+import java.util.Collection;
 
-    public VanishCommand(VanishManager manager) {
-        this.manager = manager;
+public class VanishCommand implements BasicCommand {
+    private final PriorityManager manager;
+
+    public VanishCommand(NVanish plugin) {
+        this.manager = plugin.getManager();
     }
 
     @Override
     public void execute(CommandSourceStack source, String[] args) {
         Player s = (Player) source.getSender();
 
-        manager.toggleVanish(s);
+        Player p = s;
+
+        if (args.length > 0) {
+            p = Bukkit.getPlayer(args[0]);
+        }
+
+        if (p == null) {
+            LegacyTextHandler.sendFormattedMessage(s, "<red>Игрок не найден!");
+            return;
+        }
+
+        if (!manager.isPlayerVanished(p)) {
+            LegacyTextHandler.sendFormattedMessage(s, "<green>Игрок "+p.getName()+" в ванише!");
+        } else {
+            LegacyTextHandler.sendFormattedMessage(s, "<red>Игрок "+p.getName()+" не в ванише!");
+        }
+
+        manager.toggleVanish(p);
+    }
+
+    @Override
+    public Collection<String> suggest(final CommandSourceStack source, final String[] args) {
+        if (args.length == 0) {
+            return Bukkit.getOnlinePlayers().stream().map(Player::getName).toList();
+        }
+        return Bukkit.getOnlinePlayers().stream()
+                .map(Player::getName)
+                .filter(name -> name.toLowerCase()
+                        .startsWith(args[args.length - 1]
+                                .toLowerCase())).toList();
     }
 
     @Override

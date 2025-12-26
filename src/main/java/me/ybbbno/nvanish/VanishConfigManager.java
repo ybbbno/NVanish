@@ -7,13 +7,10 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-public class HiderConfigManager extends BasicConfigHandler {
-    private PluginProvider plugin;
+public class VanishConfigManager extends BasicConfigHandler {
 
-    public HiderConfigManager(PluginProvider plugin) {
-        super(plugin, "tabhider.yml");
-
-        this.plugin = plugin;
+    public VanishConfigManager(PluginProvider plugin) {
+        super(plugin, "vanish.yml");
     }
 
     public Set<UUID> getPlayers() {

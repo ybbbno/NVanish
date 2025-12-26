@@ -1,12 +1,15 @@
 permissions:
+  nvanish.reload:
+    description: Allows /nvanish reload
+    default: op
+  nvanish.status:
+    description: Allows /nvanish status
+    default: op
   vanish.use:
     description: Allows use of /vanish
     default: op
   vanish.see:
     description: See vanished players
-    default: op
-  vanish.reload:
-    description: Allows /vanishsettings reload
     default: op
   tab_hider.use:
     description: Allows use of /tabhide

@@ -3,7 +3,9 @@ package me.ybbbno.nvanish.commands;
 import io.papermc.paper.command.brigadier.BasicCommand;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import me.deadybbb.ybmj.LegacyTextHandler;
-import me.ybbbno.nvanish.HiderManager;
+import me.ybbbno.nvanish.NVanish;
+import me.ybbbno.nvanish.PriorityManager;
+import me.ybbbno.nvanish.TabHiderManager;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -12,25 +14,31 @@ import javax.annotation.Nullable;
 import java.util.Collection;
 
 public class TabHideCommand implements BasicCommand {
-    private final HiderManager manager;
+    private final PriorityManager manager;
 
-    public TabHideCommand(HiderManager manager) { this.manager = manager; }
+    public TabHideCommand(NVanish plugin) { this.manager = plugin.getManager(); }
 
     @Override
     public void execute(CommandSourceStack source, String[] args) {
-        Player s;
+        Player s = (Player) source.getSender();
+        Player p = s;
 
-        if (args.length == 0) {
-            s = (Player) source.getSender();
+        if (args.length > 0) {
+            p = Bukkit.getPlayer(args[0]);
+        }
+
+        if (p == null) {
+            LegacyTextHandler.sendFormattedMessage(s, "<red>Игрок не найден!");
+            return;
+        }
+
+        if (!manager.isPlayerTabHidden(p)) {
+            LegacyTextHandler.sendFormattedMessage(s, "<green>Игрок "+p.getName()+" убран из таба!");
         } else {
-            s = Bukkit.getPlayer(args[0]);
+            LegacyTextHandler.sendFormattedMessage(s, "<red>Игрок "+p.getName()+" добавлен в таб!");
         }
 
-        if (s == null) {
-            LegacyTextHandler.sendFormattedMessage(source.getSender(), "<red>Игрок не был найден!");
-        }
-
-        manager.toggle(s);
+        manager.toggleTabHider(p);
     }
 
     @Override
