@@ -1,5 +1,5 @@
 name: NVanish
-version: '0.1.3'
+version: '0.1.4'
 main: me.ybbbno.nvanish.NVanish
 api-version: '1.21'
 authors: [ Ybbb ]
@@ -9,5 +9,8 @@ dependencies:
       load: BEFORE
       required: true
     nLogin:
+      load: BEFORE
+      required: false
+    voicechat:
       load: BEFORE
       required: false

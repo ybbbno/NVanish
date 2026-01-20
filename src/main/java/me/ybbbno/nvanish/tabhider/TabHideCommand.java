@@ -1,29 +1,25 @@
-package me.ybbbno.nvanish.commands;
+package me.ybbbno.nvanish.tabhider;
 
 import io.papermc.paper.command.brigadier.BasicCommand;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import me.deadybbb.ybmj.LegacyTextHandler;
 import me.ybbbno.nvanish.NVanish;
 import me.ybbbno.nvanish.PriorityManager;
-import me.ybbbno.nvanish.VanishManager;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.jspecify.annotations.Nullable;
 
+import javax.annotation.Nullable;
 import java.util.Collection;
 
-public class VanishCommand implements BasicCommand {
+public class TabHideCommand implements BasicCommand {
     private final PriorityManager manager;
 
-    public VanishCommand(NVanish plugin) {
-        this.manager = plugin.getManager();
-    }
+    public TabHideCommand(NVanish plugin) { this.manager = plugin.getManager(); }
 
     @Override
     public void execute(CommandSourceStack source, String[] args) {
         Player s = (Player) source.getSender();
-
         Player p = s;
 
         if (args.length > 0) {
@@ -35,13 +31,13 @@ public class VanishCommand implements BasicCommand {
             return;
         }
 
-        if (!manager.isPlayerVanished(p)) {
-            LegacyTextHandler.sendFormattedMessage(s, "<green>Игрок "+p.getName()+" в ванише!");
+        if (!manager.isPlayerTabHidden(p)) {
+            LegacyTextHandler.sendFormattedMessage(s, "<green>Игрок "+p.getName()+" убран из таба!");
         } else {
-            LegacyTextHandler.sendFormattedMessage(s, "<red>Игрок "+p.getName()+" не в ванише!");
+            LegacyTextHandler.sendFormattedMessage(s, "<red>Игрок "+p.getName()+" добавлен в таб!");
         }
 
-        manager.toggleVanish(p);
+        manager.toggleTabHider(p);
     }
 
     @Override
@@ -52,8 +48,8 @@ public class VanishCommand implements BasicCommand {
         return Bukkit.getOnlinePlayers().stream()
                 .map(Player::getName)
                 .filter(name -> name.toLowerCase()
-                        .startsWith(args[args.length - 1]
-                                .toLowerCase())).toList();
+                .startsWith(args[args.length - 1]
+                .toLowerCase())).toList();
     }
 
     @Override
@@ -64,7 +60,5 @@ public class VanishCommand implements BasicCommand {
     }
 
     @Override
-    public @Nullable String permission() {
-        return "vanish.use";
-    }
+    public @Nullable String permission() { return "tab_hider.use"; }
 }

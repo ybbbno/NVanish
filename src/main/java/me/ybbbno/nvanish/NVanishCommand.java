@@ -1,12 +1,8 @@
-package me.ybbbno.nvanish.commands;
+package me.ybbbno.nvanish;
 
 import io.papermc.paper.command.brigadier.BasicCommand;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import me.deadybbb.ybmj.LegacyTextHandler;
-import me.deadybbb.ybmj.PluginProvider;
-import me.ybbbno.nvanish.NVanish;
-import me.ybbbno.nvanish.TabHiderManager;
-import me.ybbbno.nvanish.VanishManager;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;

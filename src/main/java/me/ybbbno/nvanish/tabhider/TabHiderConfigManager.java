@@ -1,4 +1,4 @@
-package me.ybbbno.nvanish;
+package me.ybbbno.nvanish.tabhider;
 
 import me.deadybbb.ybmj.BasicConfigHandler;
 import me.deadybbb.ybmj.PluginProvider;

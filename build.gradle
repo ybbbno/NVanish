@@ -3,22 +3,26 @@ plugins {
 }
 
 group = 'me.ybbbno'
-version = '0.1.3'
+version = '0.1.4'
 
 repositories {
     mavenCentral()
     maven {
         name = "papermc-repo"
-        url = "https://repo.papermc.io/repository/maven-public/"
+        url = 'https://repo.papermc.io/repository/maven-public/'
     }
     maven {
-        url = uri('https://repo.nickuc.com/maven-releases/')
+        url = 'https://repo.nickuc.com/maven-releases/'
+    }
+    maven {
+        url = 'https://maven.maxhenkel.de/repository/public'
     }
 }
 
 dependencies {
     compileOnly("io.papermc.paper:paper-api:1.21.4-R0.1-SNAPSHOT")
     compileOnly('com.nickuc.login:api:10.4')
+    compileOnly("de.maxhenkel.voicechat:voicechat-api:2.6.0")
     compileOnly(files("libs/YBMJ-0.1.2.jar"))
 }
 
