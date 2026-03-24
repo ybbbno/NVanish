@@ -2,13 +2,9 @@ package me.ybbbno.nvanish.pm;
 
 import me.deadybbb.ybmj.BasicManagerHandler;
 import me.deadybbb.ybmj.PluginProvider;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TranslatableComponent;
-import net.kyori.adventure.translation.GlobalTranslator;
 import org.bukkit.entity.Player;
 
 import java.util.HashSet;
-import java.util.Locale;
 import java.util.Set;
 import java.util.UUID;
 
@@ -33,7 +29,7 @@ public class PMManager extends BasicManagerHandler {
     }
 
     public void toggle(Player p) {
-        if (!is_init_set()) return;
+        if (!isInit()) return;
 
         if (!isPlayerHidden(p)) {
             hidePlayer(p);
@@ -45,17 +41,17 @@ public class PMManager extends BasicManagerHandler {
     }
 
     public boolean isPlayerHidden(Player p) {
-        if (!is_init) return false;
+        if (!isInit()) return false;
         return hiddenPlayers.contains(p.getUniqueId());
     }
 
     public boolean hidePlayer(Player p) {
-        if (!is_init) return false;
+        if (!isInit()) return false;
         return hiddenPlayers.add(p.getUniqueId());
     }
 
     public boolean showPlayer(Player p) {
-        if (!is_init) return false;
+        if (!isInit()) return false;
         return hiddenPlayers.remove(p.getUniqueId());
     }
 }

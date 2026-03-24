@@ -23,7 +23,7 @@ dependencies {
     compileOnly("io.papermc.paper:paper-api:1.21.4-R0.1-SNAPSHOT")
     compileOnly('com.nickuc.login:api:10.4')
     compileOnly("de.maxhenkel.voicechat:voicechat-api:2.6.0")
-    compileOnly(files("libs/YBMJ-0.1.2.jar"))
+    compileOnly(files("libs/YBMJ-0.1.4.jar"))
 }
 
 def targetJavaVersion = 21

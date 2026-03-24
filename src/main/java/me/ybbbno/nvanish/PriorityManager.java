@@ -1,6 +1,5 @@
 package me.ybbbno.nvanish;
 
-import com.nickuc.login.api.event.bukkit.auth.AuthenticateEvent;
 import me.deadybbb.ybmj.BasicManagerHandler;
 import me.deadybbb.ybmj.PluginProvider;
 import me.ybbbno.nvanish.pm.PMManager;
@@ -19,10 +18,6 @@ public class PriorityManager extends BasicManagerHandler implements Listener {
     private final TabHiderManager tabM;
     private final PMManager pmM;
 
-    private boolean vSet = false;
-    private boolean tSet = false;
-    private boolean pmSet = false;
-
     public PriorityManager(PluginProvider plugin, boolean hasNLoginAPI) {
         super(plugin);
         this.hasNLoginApi = hasNLoginAPI;
@@ -37,18 +32,8 @@ public class PriorityManager extends BasicManagerHandler implements Listener {
         tabM.init();
         pmM.init();
 
-        vSet = vanishM.is_init_set();
-        tSet = tabM.is_init_set();
-        pmSet = pmM.is_init_set();
-
         for (Player p : Bukkit.getOnlinePlayers()) {
-            if (vSet && vanishM.isPlayerVanished(p)) {
-                vanishM.hidePlayerFromAll(p);
-                if (pmSet && pmM.isPlayerHidden(p)) pmM.hidePlayer(p);
-            } else if (tSet && tabM.isPlayerHidden(p)) {
-                tabM.hidePlayerFromAll(p);
-                if (pmSet && pmM.isPlayerHidden(p)) pmM.hidePlayer(p);
-            }
+            reloadState(p);
         }
     }
 
@@ -59,18 +44,8 @@ public class PriorityManager extends BasicManagerHandler implements Listener {
         pmM.deinit();
 
         for (Player p : Bukkit.getOnlinePlayers()) {
-            if (vanishM.isPlayerVanished(p)) {
-                vanishM.showPlayerToAll(p);
-                if (pmSet && pmM.isPlayerHidden(p)) pmM.showPlayer(p);
-            } else if (tabM.isPlayerHidden(p)) {
-                tabM.showPlayerToAll(p);
-                if (pmSet && pmM.isPlayerHidden(p)) pmM.showPlayer(p);
-            }
+            reloadState(p);
         }
-
-        vSet = vanishM.is_init_set();
-        tSet = tabM.is_init_set();
-        pmSet = pmM.is_init_set();
     }
 
     @EventHandler
@@ -78,94 +53,40 @@ public class PriorityManager extends BasicManagerHandler implements Listener {
         if (hasNLoginApi) return;
         Player joined = event.getPlayer();
 
-        if (vSet && vanishM.isPlayerVanished(joined)) {
-            vanishM.hidePlayerFromAll(joined);
-            if (pmSet && pmM.isPlayerHidden(joined)) pmM.hidePlayer(joined);
-        } else if (tSet && tabM.isPlayerHidden(joined)) {
-            tabM.hidePlayerFromAll(joined);
-            if (pmSet && pmM.isPlayerHidden(joined)) pmM.hidePlayer(joined);
-        } else {
-            if (vSet) {
-                vanishM.hideFromThatPlayer(joined);
-            }
-
-            if (tSet) {
-                tabM.hideFromThatPlayer(joined);
-            }
-        }
+        reloadState(joined);
     }
 
     @EventHandler
     public void onQuit(PlayerQuitEvent event) {
         Player quited = event.getPlayer();
 
-        if (vSet && vanishM.isPlayerVanished(quited)) {
+        if (vanishM.isPlayerVanished(quited) || tabM.isPlayerHidden(quited)) {
             event.quitMessage(null);
-        } else if (tSet && tabM.isPlayerHidden(quited)) {
-            event.quitMessage(null);
-        }
-    }
-
-    @EventHandler
-    public void onAuthenticate(AuthenticateEvent event) {
-        if (!hasNLoginApi) return;
-        Player joined = event.getPlayer();
-
-        if (vSet && vanishM.isPlayerVanished(joined)) {
-            vanishM.hidePlayerFromAll(joined);
-            if (pmSet && pmM.isPlayerHidden(joined)) pmM.hidePlayer(joined);
-        } else if (tSet && tabM.isPlayerHidden(joined)) {
-            Bukkit.getScheduler().runTaskLater(plugin, () -> {
-                tabM.hidePlayerFromAll(joined);
-            }, 2L);
-            if (pmSet && pmM.isPlayerHidden(joined)) pmM.hidePlayer(joined);
-        } else {
-            if (vSet) {
-                vanishM.hideFromThatPlayer(joined);
-            }
-
-            if (tSet) {
-                Bukkit.getScheduler().runTaskLater(plugin, () -> {
-                    tabM.hideFromThatPlayer(joined);
-                }, 2L);
-            }
         }
     }
 
     public void toggleVanish(Player p) {
-        if (!vSet) return;
+        if (!vanishM.isInit()) return;
 
-        if (tSet && tabM.isPlayerHidden(p)) {
+        if (tabM.isPlayerHidden(p)) {
             tabM.toggle(p);
         }
 
         vanishM.toggle(p);
 
-        if (pmSet) {
-            if (vanishM.isPlayerVanished(p)) {
-                pmM.hidePlayer(p);
-            } else {
-                pmM.showPlayer(p);
-            }
-        }
+        reloadState(p);
     }
 
     public void toggleTabHider(Player p) {
-        if (!tSet) return;
+        if (!tabM.isInit()) return;
 
-        if (vSet && vanishM.isPlayerVanished(p)) {
+        if (vanishM.isPlayerVanished(p)) {
             vanishM.toggle(p);
         }
 
         tabM.toggle(p);
 
-        if (pmSet) {
-            if (tabM.isPlayerHidden(p)) {
-                pmM.hidePlayer(p);
-            } else {
-                pmM.showPlayer(p);
-            }
-        }
+        reloadState(p);
     }
 
     public boolean isPlayerVanished(Player p) {
@@ -177,4 +98,17 @@ public class PriorityManager extends BasicManagerHandler implements Listener {
     }
 
     public boolean isPlayerPMHidden(Player p) { return pmM.isPlayerHidden(p); }
+
+    public void reloadState(Player p) {
+        if (vanishM.isPlayerVanished(p)) {
+            vanishM.hidePlayerFromAll(p);
+            if (pmM.isPlayerHidden(p)) pmM.hidePlayer(p);
+        } else if (tabM.isPlayerHidden(p)) {
+            Bukkit.getScheduler().runTaskLater(plugin, () -> tabM.hidePlayerFromAll(p), 2L);
+            if (pmM.isPlayerHidden(p)) pmM.hidePlayer(p);
+        } else {
+            vanishM.hideFromThatPlayer(p);
+            Bukkit.getScheduler().runTaskLater(plugin, () -> tabM.hideFromThatPlayer(p), 2L);
+        }
+    }
 }

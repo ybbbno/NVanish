@@ -50,7 +50,7 @@ public class TabHiderManager extends BasicManagerHandler implements Listener {
 //    }
 
     public void toggle(Player p) {
-        if (!is_init_set()) return;
+        if (!isInit()) return;
 
         if (!isPlayerHidden(p)) {
             hidePlayerFromAll(p);

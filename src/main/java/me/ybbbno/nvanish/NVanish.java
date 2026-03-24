@@ -11,6 +11,7 @@ import me.ybbbno.nvanish.voicechat.VoicechatManager;
 
 public final class NVanish extends PluginProvider {
     private PriorityManager priorityM;
+    private NLoginManager nLoginM;
 
     public void onEnable() {
         saveDefaultConfig();
@@ -37,6 +38,11 @@ public final class NVanish extends PluginProvider {
         priorityM = new PriorityManager(this, hasNLoginAPI);
         priorityM.init();
         getServer().getPluginManager().registerEvents(priorityM, this);
+
+        if (hasNLoginAPI) {
+            nLoginM = new NLoginManager(priorityM, hasNLoginAPI);
+            getServer().getPluginManager().registerEvents(nLoginM, this);
+        }
 
         registerCommand("vanish", new VanishCommand(this));
         registerCommand("tabhide", new TabHideCommand(this));

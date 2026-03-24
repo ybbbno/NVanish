@@ -3,16 +3,13 @@ package me.ybbbno.nvanish.pm;
 import io.papermc.paper.command.brigadier.BasicCommand;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import me.deadybbb.ybmj.LegacyTextHandler;
-import me.deadybbb.ybmj.YBMJ;
 import me.ybbbno.nvanish.NVanish;
+import me.ybbbno.nvanish.NVanishTranslationKeys;
 import me.ybbbno.nvanish.PriorityManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TranslatableComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
-import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
-import net.kyori.adventure.translation.GlobalTranslator;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -21,15 +18,10 @@ import java.util.Collection;
 import java.util.List;
 
 public class PMCommand implements BasicCommand {
-    private final NVanish plugin;
     private final PriorityManager manager;
-    private final PMTranslator translator;
 
     public PMCommand(NVanish plugin) {
-        this.plugin = plugin;
         this.manager = plugin.getManager();
-        this.translator = new PMTranslator(plugin);
-        GlobalTranslator.translator().addSource(translator);
     }
 
     @Override
@@ -38,13 +30,17 @@ public class PMCommand implements BasicCommand {
         // ybbbno whispers to you: 123
         // Вы прошептали ybbbno: 123
         // ybbbno шепчет вам: 123
-
         Player s = (Player) commandSourceStack.getSender();
+
+        if (args.length == 0) {
+            LegacyTextHandler.sendFormattedMessage(s, Component.translatable(NVanishTranslationKeys.COMMAND_FAILED, "Unknown command or insufficient permissions").color(NamedTextColor.RED));
+            return;
+        }
+
         Player p = Bukkit.getPlayer(args[0]);
 
         if (p == null || manager.isPlayerPMHidden(p)) {
-            TranslatableComponent unknown = Component.translatable(PMTranslationKeys.UNKNOWN_PLAYER).color(NamedTextColor.RED);
-            LegacyTextHandler.sendFormattedMessage(s, translator.translate(unknown, s.locale()));
+            LegacyTextHandler.sendFormattedMessage(s, Component.translatable(NVanishTranslationKeys.UNKNOWN_PLAYER, "No player was found").color(NamedTextColor.RED));
             return;
         }
 
@@ -57,13 +53,13 @@ public class PMCommand implements BasicCommand {
 
         Component sname = Component.text(s.getName());
         Component pname = Component.text(p.getName());
-        TranslatableComponent sm = Component.translatable(PMTranslationKeys.WHISPERS_TO).arguments(pname, ptext).color(NamedTextColor.GRAY).decorate(TextDecoration.ITALIC);
-        TranslatableComponent pm = Component.translatable(PMTranslationKeys.WHISPERS_FROM).arguments(sname, ptext).color(NamedTextColor.GRAY).decorate(TextDecoration.ITALIC);
+        TranslatableComponent sm = Component.translatable(NVanishTranslationKeys.WHISPERS_TO, "You whisper to %s: %s").arguments(pname, ptext).color(NamedTextColor.GRAY).decorate(TextDecoration.ITALIC);
+        TranslatableComponent pm = Component.translatable(NVanishTranslationKeys.WHISPERS_FROM, "%s whispers to you: %s").arguments(sname, ptext).color(NamedTextColor.GRAY).decorate(TextDecoration.ITALIC);
 
 //        plugin.logger.info(manager.translate(sm, s.locale()).toString());
 //        plugin.logger.info(manager.translate(pm, p.locale()).toString());
-        LegacyTextHandler.sendFormattedMessage(s, translator.translate(sm, s.locale()));
-        LegacyTextHandler.sendFormattedMessage(p, translator.translate(pm, p.locale()));
+        LegacyTextHandler.sendFormattedMessage(s, sm);
+        LegacyTextHandler.sendFormattedMessage(p, pm);
     }
 
     @Override

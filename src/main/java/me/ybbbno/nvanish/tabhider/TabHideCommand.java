@@ -4,7 +4,10 @@ import io.papermc.paper.command.brigadier.BasicCommand;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import me.deadybbb.ybmj.LegacyTextHandler;
 import me.ybbbno.nvanish.NVanish;
+import me.ybbbno.nvanish.NVanishTranslationKeys;
 import me.ybbbno.nvanish.PriorityManager;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -27,7 +30,7 @@ public class TabHideCommand implements BasicCommand {
         }
 
         if (p == null) {
-            LegacyTextHandler.sendFormattedMessage(s, "<red>Игрок не найден!");
+            LegacyTextHandler.sendFormattedMessage(s, Component.translatable(NVanishTranslationKeys.UNKNOWN_PLAYER).color(NamedTextColor.RED));
             return;
         }
 
