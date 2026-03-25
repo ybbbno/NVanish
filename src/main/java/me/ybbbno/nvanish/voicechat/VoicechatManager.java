@@ -29,8 +29,6 @@ public class VoicechatManager implements VoicechatPlugin, Listener {
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
-        for (VolumeCategory volumeCategory : api.getVolumeCategories()) {
-            plugin.logger.info(volumeCategory.getName());
-        }
+
     }
 }
