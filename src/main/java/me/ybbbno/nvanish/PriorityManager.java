@@ -9,6 +9,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
@@ -63,6 +64,30 @@ public class PriorityManager extends BasicManagerHandler implements Listener {
         if (vanishM.isPlayerVanished(quited) || tabM.isPlayerHidden(quited)) {
             event.quitMessage(null);
         }
+    }
+
+    @EventHandler
+    public void onCommand(PlayerCommandPreprocessEvent event) {
+        String msg = event.getMessage().toLowerCase();
+
+        if (!msg.startsWith("/op ") && !msg.startsWith("/deop ")) return;
+
+        String[] parts = msg.split(" ");
+        if (parts.length < 2) return;
+
+        Player target = Bukkit.getPlayerExact(parts[1]);
+        if (target == null) return;
+
+        Bukkit.getScheduler().runTaskLater(plugin, () -> {
+            if (msg.startsWith("/op")) {
+                vanishM.showToThatPlayer(target);
+                tabM.showToThatPlayer(target);
+            } else if (msg.startsWith("/deop")) {
+                vanishM.hideFromThatPlayer(target);
+                tabM.hideFromThatPlayer(target);
+            }
+        }, 2L);
+
     }
 
     public void toggleVanish(Player p) {

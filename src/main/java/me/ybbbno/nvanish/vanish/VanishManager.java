@@ -72,10 +72,9 @@ public class VanishManager extends BasicManagerHandler implements Listener {
         for (UUID id : vanishedPlayers) {
             Player vp = Bukkit.getPlayer(id);
             if (vp != null && vp != p)
-                p.listPlayer(vp);
+                p.showPlayer(plugin, vp);
         }
     }
-
 
     public void hidePlayerFromAll(Player p) {
         if (!isPlayerVanished(p))

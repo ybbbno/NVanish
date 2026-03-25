@@ -66,11 +66,17 @@ public class PMCommand implements BasicCommand {
     public Collection<String> suggest(final CommandSourceStack source, final String[] args) {
         return switch (args.length) {
             case 0 -> Bukkit.getOnlinePlayers().stream()
-                    .filter(p -> !manager.isPlayerPMHidden(p))
+                    .filter(p -> {
+                        if (source.getSender().isOp()) return true;
+                        else return !manager.isPlayerPMHidden(p);
+                    })
                     .map(Player::getName)
                     .toList();
             case 1 -> Bukkit.getOnlinePlayers().stream()
-                    .filter(p -> !manager.isPlayerPMHidden(p))
+                    .filter(p -> {
+                        if (source.getSender().isOp()) return true;
+                        else return !manager.isPlayerPMHidden(p);
+                    })
                     .map(Player::getName)
                     .filter(name -> name.toLowerCase()
                             .startsWith(args[args.length - 1]
